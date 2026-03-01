@@ -67,7 +67,7 @@ CREATE TABLE users (
     money_for_hour INT NOT NULL DEFAULT 0
 );
 
-CREATE TABLE time_manage (
+CREATE TABLE work_intervals (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(user_id),
     work_date DATE NOT NULL,
