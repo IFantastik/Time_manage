@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/images/avatar">
+        <file>image/default.png</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>appicon.png</file>
+    </qresource>
+</RCC>
