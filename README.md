@@ -112,5 +112,5 @@ CREATE TABLE time_manage (
 host=localhost
 name=timeman
 user=postgres
-password=ваш_пароль_к_бд
+password=your_password
 ```
