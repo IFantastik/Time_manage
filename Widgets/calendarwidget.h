@@ -44,6 +44,7 @@ private:
 
     void loadWorkedMinutesForMonth(int year, int month);
     QMap<QDate,int> workedMinutesByDate;
+    QMap<QDate,bool> hasRecordsByDate;
 
     void applyDayStyle(QPushButton *btn, bool hasData);
     static QString pluralRu(int typeTime, const QString& one, const QString& few, const QString& many);

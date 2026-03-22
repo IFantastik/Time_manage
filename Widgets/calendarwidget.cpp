@@ -83,35 +83,43 @@ void CalendarWidget::buildWeekHeader()
 void CalendarWidget::loadWorkedMinutesForMonth(int year, int month)
 {
     workedMinutesByDate.clear();
+    hasRecordsByDate.clear();
 
     int user_id = Session::instance().userId();
-    if(user_id == -1) return;
+    if (user_id == -1) return;
 
     QDate first(year, month, 1);
     QDate last(year, month, first.daysInMonth());
 
     QSqlQuery query(Database::instance().db);
 
-    query.prepare("SELECT work_date, "
-                  "COALESCE(SUM(EXTRACT(EPOCH FROM (end_time - start_time)) / 60), 0)::int AS minutes "
-                  "FROM work_intervals "
-                  "WHERE user_id = ? AND work_date BETWEEN ? AND ? "
-                  "GROUP BY work_date");
+    query.prepare(
+        "SELECT work_date, "
+        "COUNT(*) > 0 AS has_any_records, "
+        "COALESCE(SUM(EXTRACT(EPOCH FROM (end_time - start_time)) / 60) "
+        "FILTER (WHERE is_active = true), 0)::int AS minutes "
+        "FROM work_intervals "
+        "WHERE user_id = ? AND work_date BETWEEN ? AND ? "
+        "GROUP BY work_date"
+        );
 
     query.addBindValue(user_id);
     query.addBindValue(first);
     query.addBindValue(last);
 
-    if(!query.exec()){
+    if (!query.exec()) {
         qDebug() << "loadWorkedMinutesForMonth error:" << query.lastError().text();
         return;
     }
 
-    while(query.next()){
+    while (query.next()) {
         QDate d = query.value("work_date").toDate();
+        bool hasRecords = query.value("has_any_records").toBool();
         int minutes = query.value("minutes").toInt();
-        if(d.isValid() && minutes > 0){
+
+        if (d.isValid()) {
             workedMinutesByDate[d] = minutes;
+            hasRecordsByDate[d] = hasRecords;
         }
     }
 }
@@ -177,7 +185,7 @@ void CalendarWidget::rebuildCalendarGrid()
         btn->setFlat(true);
 
         int minutes = workedMinutesByDate.value(date, 0);
-        bool hasData = (minutes > 0);
+        bool hasData = (hasRecordsByDate.value(date, false));
 
         QVBoxLayout *vLayout = new QVBoxLayout(btn);
         vLayout->setContentsMargins(8,8,8,8);
@@ -198,7 +206,7 @@ void CalendarWidget::rebuildCalendarGrid()
         QLabel *lblWorkedText = new QLabel("Отработано:",btn);
         lblWorkedText->setStyleSheet("color:#9e9e9e; font-size:11px;");
         QString workedStr = TimeUtils::formatWorkedRu(minutes);
-        QLabel *lblWorkedVal = new QLabel(workedStr.isEmpty() ? "-" : workedStr, btn);
+        QLabel *lblWorkedVal = new QLabel(((minutes > 0) && !workedStr.isEmpty()) ? workedStr : "-", btn);
         lblWorkedVal->setStyleSheet("font-size:12px;");
 
         vLayout->addLayout(top);

@@ -4,4 +4,4 @@ CMakeCache.txt
 *.user
 *.pro.user*
 *.autosave
-dist/
+dist/config.ini

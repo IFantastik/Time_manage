@@ -28,7 +28,7 @@ private slots:
 
 private:
     Ui::ProfileWidget *ui;
-    static int fetchMinutesByQuery(const QString &sql, int userId);
+    static int fetchMinutesByQuery(const QString &sql, int userId, bool isActive);
 
 };
 

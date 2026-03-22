@@ -42,9 +42,10 @@ void ProfileWidget::updateMoneyForHour(){
     int moneyForHour = ui->spinBoxMoneyForH->value();
 
     QSqlQuery query(Database::instance().db);
-    query.prepare("UPDATE users SET money_for_hour = ? WHERE user_id = ?");
+    query.prepare("UPDATE users SET money_for_hour = ? WHERE user_id = ? AND is_active = ?");
     query.addBindValue(moneyForHour);
     query.addBindValue(user_id);
+    query.addBindValue(true);
 
     if(!query.exec()){
         qDebug() << "Ошибка запроса: " << query.lastError().text();
@@ -79,19 +80,21 @@ void ProfileWidget::refresh()
     int weekMinutes = fetchMinutesByQuery(
         "SELECT COALESCE(SUM(EXTRACT(EPOCH FROM (end_time - start_time)))/60, 0)::int "
         "FROM work_intervals "
-        "WHERE user_id = ? "
+        "WHERE user_id = ? AND is_active = ? "
         "AND work_date >= date_trunc('week', CURRENT_DATE)::date "
         "AND work_date <  (date_trunc('week', CURRENT_DATE) + interval '7 days')::date",
-        userId
+        userId,
+        true
         );
 
     int monthMinutes = fetchMinutesByQuery(
         "SELECT COALESCE(SUM(EXTRACT(EPOCH FROM (end_time - start_time)))/60, 0)::int "
         "FROM work_intervals "
-        "WHERE user_id = ? "
+        "WHERE user_id = ? AND is_active = ? "
         "AND work_date >= date_trunc('month', CURRENT_DATE)::date "
         "AND work_date <  (date_trunc('month', CURRENT_DATE) + interval '1 month')::date",
-        userId
+        userId,
+        true
         );
 
     QString weekStr = TimeUtils::formatWorkedRu(weekMinutes);
@@ -114,11 +117,12 @@ void ProfileWidget::on_pushButtonQuit_clicked()
     emit quitApp();
 }
 
-int ProfileWidget::fetchMinutesByQuery(const QString &sql, int userId)
+int ProfileWidget::fetchMinutesByQuery(const QString &sql, int userId, bool isActive)
 {
     QSqlQuery q(Database::instance().db);
     q.prepare(sql);
     q.addBindValue(userId);
+    q.addBindValue(isActive);
 
     if (!q.exec()) {
         qDebug() << "Ошибка при получении рабочих минут профиля:" << q.lastError().text();

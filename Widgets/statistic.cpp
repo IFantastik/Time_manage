@@ -216,12 +216,13 @@ bool Statistic::loadMinutesGrouped(const QDate &from, const QDate &to,
         "SELECT " + bucketExpr + " AS bucket, "
                                  "       COALESCE(SUM(EXTRACT(EPOCH FROM (end_time - start_time)) / 60), 0)::int AS minutes "
                                  "FROM work_intervals "
-                                 "WHERE user_id = ? AND work_date BETWEEN ? AND ? "
+                                 "WHERE user_id = ? AND is_active = ? AND work_date BETWEEN ? AND ? "
                                  "GROUP BY bucket "
                                  "ORDER BY bucket"
         );
 
     q.addBindValue(userId);
+    q.addBindValue(true);
     q.addBindValue(from.toString(Qt::ISODate));
     q.addBindValue(to.toString(Qt::ISODate));
 
