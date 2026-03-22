@@ -74,6 +74,7 @@ CREATE TABLE work_intervals (
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     note TEXT
+    is_active BOOLEAN NOT NULL DEFAULT true,
 );
 ```
 
