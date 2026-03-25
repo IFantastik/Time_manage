@@ -42,10 +42,9 @@ void ProfileWidget::updateMoneyForHour(){
     int moneyForHour = ui->spinBoxMoneyForH->value();
 
     QSqlQuery query(Database::instance().db);
-    query.prepare("UPDATE users SET money_for_hour = ? WHERE user_id = ? AND is_active = ?");
+    query.prepare("UPDATE users SET money_for_hour = ? WHERE user_id = ?");
     query.addBindValue(moneyForHour);
     query.addBindValue(user_id);
-    query.addBindValue(true);
 
     if(!query.exec()){
         qDebug() << "Ошибка запроса: " << query.lastError().text();
