@@ -45,7 +45,7 @@ void loginwindow::checkLogin(QString login, QString password){
         return;
     }
     QSqlQuery query(Database::instance().db);
-    query.prepare("SELECT user_id, password, name, mail, photo, money_for_hour FROM users WHERE login = ?");
+    query.prepare("SELECT user_id, password, name, mail, photo, money_for_hour, profession_id FROM users WHERE login = ?");
     query.addBindValue(login);
 
     if(!query.exec()){
@@ -62,8 +62,9 @@ void loginwindow::checkLogin(QString login, QString password){
         QString mail = query.value(3).toString();
         QString photo = query.value(4).toString();
         int moneyForHour = query.value(5).toInt();
+        int profession_id = query.value(6).toInt();
         if(storedHash == enteredHash){
-            Session::instance().setUser(user_id, login, name, mail, photo, moneyForHour);
+            Session::instance().setUser(user_id, login, name, mail, photo, moneyForHour, profession_id);
             accept();
         }
         else{

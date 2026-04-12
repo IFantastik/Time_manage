@@ -8,7 +8,7 @@ class Session
 public:
     static Session& instance();
 
-    void setUser(int id, const QString &login, const QString &name, const QString &mail, const QString &photo, int moneyForHour);
+    void setUser(int id, const QString &login, const QString &name, const QString &mail, const QString &photo, int moneyForHour, int profession_id);
     void aboutUser() const;
     void clear();
 
@@ -18,7 +18,9 @@ public:
     QString name() const;
     QString mail() const;
     QString photo() const;
+    int profession_id() const;
     void setMoneyForHour(int value);
+    void setProfessionId(int value);
     bool isLoggedIn() const;
 
 private:
@@ -29,6 +31,7 @@ private:
     QString m_name;
     QString m_mail;
     QString m_photo;
+    int m_profession_id;
 };
 
 #endif // SESSION_H

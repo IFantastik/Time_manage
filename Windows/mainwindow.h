@@ -27,5 +27,8 @@ private:
     ProfileWidget *profilePage;
     CalendarWidget *calendarPage;
     Statistic *statisticPage;
+    void createPages();
+    void destroyPages();
+    void setupConnections();
 };
 #endif // MAINWINDOW_H
