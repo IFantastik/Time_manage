@@ -65,6 +65,7 @@ CREATE TABLE users (
     mail TEXT,
     photo TEXT,
     money_for_hour INT NOT NULL DEFAULT 0
+    profession_id INTEGER REFERENCES profession(id) ON DELETE SET NULL
 );
 
 CREATE TABLE work_intervals (
@@ -73,8 +74,14 @@ CREATE TABLE work_intervals (
     work_date DATE NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
-    note TEXT
+    note TEXT,
     is_active BOOLEAN NOT NULL DEFAULT true,
+);
+
+CREATE TABLE profession (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    money_for_hour INTEGER NOT NULL CHECK (money_for_hour > 0)
 );
 ```
 
