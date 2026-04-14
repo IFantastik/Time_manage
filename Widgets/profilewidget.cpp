@@ -145,6 +145,7 @@ void ProfileWidget::visibleAddProf(bool status)
     ui->le_money->setVisible(status);
     ui->le_prof->setVisible(status);
     ui->widget->setVisible(status);
+    ui->pb_deleteProf->setVisible(!status);
     ui->label_proffesion->setVisible(!status);
     ui->cb_profession->setVisible(!status);
     ui->pb_showadd->setVisible(!status);
